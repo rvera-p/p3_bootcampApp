@@ -1,0 +1,94 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/" id="navbarBrand">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/home">Home</a>
+        </li>
+        <li class="nav-item" id="linkUsers">
+          <a class="nav-link" href="/users">Usuarios</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/bootcamps">Bootcamps</a>
+        </li>
+        <li class="nav-item d-none" id="linkMatriculas">
+          <a class="nav-link" href="/matriculas">Matricular alumno</a>
+        </li>
+        <li class="nav-item" id="linkLogin">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+        <li class="nav-item d-none" id="linkLogout">
+          <a class="nav-link" href="">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<script>
+    const token = localStorage.getItem("token");
+    const administrador = localStorage.getItem("administrador");
+    
+    const navbarBrand = document.getElementById("navbarBrand");
+
+    const linkLogin = document.getElementById("linkLogin");
+    const linkLogout = document.getElementById("linkLogout");
+    const linkMatriculas = document.getElementById("linkMatriculas");
+    const linkUsers = document.getElementById("linkUsers");
+
+    if(token && administrador){
+      linkLogin.classList.add("d-none");
+      linkLogout.classList.remove("d-none");
+      linkMatriculas.classList.remove("d-none");
+
+      linkMatriculas.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        //let anchor = document.querySelector("#linkMatriculas a");
+        let anchor = linkMatriculas.firstElementChild;
+
+        let path = anchor.href + "?token=" + token;
+        location.href = path;
+      });
+
+      linkMatriculas.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        //let anchor = document.querySelector("#linkMatriculas a");
+        let anchor = linkMatriculas.firstElementChild;
+
+        let path = anchor.href + "?token=" + token;
+        location.href = path;
+      });
+
+      linkUsers.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        //let anchor = document.querySelector("#linkMatriculas a");
+        let anchor = linkUsers.firstElementChild;
+
+        let path = anchor.href + "?token=" + token;
+        location.href = path;
+      });
+
+
+    };
+
+
+
+
+
+
+//eliminar datos del localStorage
+    linkLogout.addEventListener("click", (event) => {
+      event.preventDefault();
+      localStorage.clear();
+      location.href = "/";
+
+    })
+</script>

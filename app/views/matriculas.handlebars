@@ -1,0 +1,77 @@
+<h1 class="text-center py-3">Vista de Matriculas.</h1>
+
+
+<form id="formMatricula">
+    <section class="row">
+        <div class="col-6">
+            <label for="form-label">Alumnos:</label>
+            <select class="form-select" required id="idUser">
+                <option selected value="">Seleccione un Alumno.</option>
+                {{#each usuarios}}
+                    <option value="{{id}}">{{firstName}} {{lastName}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-6">
+            <label for="form-label">Bootcamps:</label>
+            <select class="form-select" required id="idBootcamp">
+                <option selected value="">Seleccione un Bootcamp</option>
+                {{#each bootcamps}}
+                    <option value="{{id}}">{{title}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </section>
+    <div class="d-flex justify-content-center py-3">
+        <input type="submit" class="btn btn-primary" value="matricular!">
+    </div>
+</form>
+
+
+<script>
+    const formMatricula = document.getElementById("formMatricula");
+
+    formMatricula.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        try{
+
+            const token = localStorage.getItem("token");
+
+            if(!token){
+                return alert("No existe un sesión iniciada para esta operación.");
+            }
+
+            let matricula = {
+                bootcamp_id: idBootcamp.value,
+                user_id: idUser.value
+            };
+
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", `Bearer ${token}`)
+
+            const raw = JSON.stringify(matricula);
+
+            const requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw
+            };
+
+            let response = await fetch("/api/bootcamps/matricular", requestOptions);
+            let data = await response.json();
+
+            if(data.code == 201){
+                alert(data.message);
+                formMatricula.reset();
+                location.reload();
+            }else{
+                console.log(data);
+                alert("Obs.: "+ data.message);
+            }
+        }catch(error){
+            alert("Algo ha salido mal, intente más tarde.")
+        }
+    })
+</script>

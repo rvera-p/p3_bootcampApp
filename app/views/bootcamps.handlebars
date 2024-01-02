@@ -1,0 +1,40 @@
+<h1 class="text-center py-3">Vista de Bootcamps.</h1>
+
+
+
+<section>
+    <div class="accordion">
+        {{#each bootcamps}}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapse{{id}}"
+                    aria-expanded="true"
+                    aria-controls="collapse{{id}}"
+                >
+                    ID CURSO: {{id}} - {{title}}
+                </button>
+            </h2>
+            <div
+                id="collapse{{id}}"
+                class="accordion-collapse collapse"
+                data-bs-parent="#accordionExample"
+            >
+                <div class="accordion-body">
+                    <p>Cantidad de CUEs: {{cue}}</p>
+                    <p>{{description}}</p>
+                    <h3>Listado de alumnos matriculados - {{cantidadAlumnos}}:</h3>
+                    <ol>
+                        {{#each Users}}
+                            <li>{{firstName}} {{lastName}}</li>
+                        {{/each}}
+                    </ol>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</section>

@@ -1,0 +1,122 @@
+<h1 class="text-center py-3">Vista de Usuarios.</h1>
+
+{{#if autenticado}}
+<section>
+    <form id="addUserForm">
+        <div class="row mb-2">
+            <div class="col-1">
+                <label for="nombreUser">Nombre:</label>
+            </div>
+            <div class="col-3">
+                <input type="text" class="form-control" id="nombreUser" required>
+            </div>
+        </div>
+        
+        <div class="row mb-2">
+            <div class="col-1">
+                <label for="apellidoUser">Apellido:</label>
+            </div>
+            <div class="col-3">
+                <input type="text" class="form-control" id="apellidoUser" required>
+            </div>
+        </div>
+        
+        <div class="row mb-2">
+            <div class="col-1">
+                <label for="emailUser">Email:</label>
+            </div>
+            <div class="col-3">
+                <input type="email" class="form-control" id="emailUser" required>
+            </div>
+        </div>
+
+        <input type="submit" value="Registrar" class="btn btn-primary">
+       
+    </form>
+</section>
+
+{{/if}}
+
+<hr>
+<section>
+    <h2>Listado de usuarios:</h2>
+    <ul>
+        {{#if autenticado}}
+            {{#each usuarios}}
+            <li><a href="/users/details/{{id}}?token={{../token}}">ID: {{id}} - Nombre: {{firstName}} {{lastName}} - Email: {{email}}</a></li>
+            {{/each}}
+
+        {{else}}
+            {{#each usuarios}}
+             <li>ID: {{id}} - Nombre: {{firstName}} {{lastName}} - Email: {{email}}</li>
+            {{/each}}
+        {{/if}}
+    </ul>
+</section>
+
+
+<script>
+    const addUserForm = document.getElementById("addUserForm");
+
+    if(addUserForm){
+        addUserForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        try{
+
+            const token = localStorage.getItem("token");
+
+            if(!token){
+                return alert("No existe un sesión iniciada para esta operación.");
+            }
+
+            let nuevoUsuario = {
+                firstName: nombreUser.value,
+                lastName: apellidoUser.value,
+                email: emailUser.value
+            };
+
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", `Bearer ${token}`)
+
+            const raw = JSON.stringify(nuevoUsuario);
+
+            const requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            let response = await fetch("/api/users", requestOptions);
+            let data = await response.json();
+
+            if(data.code == 201){
+                alert(data.message);
+                addUserForm.reset();
+                location.reload();
+            }else if(data.code == 401){
+                alert(data.message);
+                if(data.codeToken == 1){
+                    localStorage.clear();
+                    location.href = "/login"
+                }
+            }
+            else{
+                console.log(data);
+                alert("Obs.: "+ data.message);
+            }
+
+
+
+        }catch(error){
+            alert("Error al intentar registrar el usuario.");
+        }
+
+    });
+    }
+
+
+
+</script>

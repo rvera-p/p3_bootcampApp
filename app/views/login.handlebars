@@ -1,0 +1,58 @@
+<h1 class="text-center mt-5">Vista LOGIN</h1>
+
+
+<section>
+    <form id="formLogin">
+        <label for="email" class="form-label">Email:</label>
+        <input type="email" class="form-control my-1" name="email" id="email" required>
+        <label for="password" class="form-label">Password:</label>
+        <input type="password" class="form-control my-1" name="password" id="password" required>
+        <input type="submit" value="Login" class="btn btn-primary">
+    </form>
+</section>
+
+
+<script>
+    const formLogin = document.getElementById("formLogin");
+
+    formLogin.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        try{
+
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            let datos = {
+                email: email.value,
+                password: password.value
+            }
+
+            let opciones = {
+                headers: myHeaders,
+                method: "POST",
+                body: JSON.stringify(datos)
+            }
+
+            let response = await fetch("/api/login", opciones);
+
+            let data = await response.json();
+
+            if(data.code == 200){
+                alert(data.message);
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("administrador", JSON.stringify(data.administrador));
+                location.href = "/";
+            }else {
+                alert(data.message);
+                
+            }
+
+
+
+        }catch(error){
+            console.log(error);
+            alert("Error en proceso de login.");
+        }
+    })
+</script>
